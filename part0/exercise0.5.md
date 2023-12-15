@@ -1,3 +1,6 @@
+Here is the single page app diagram at [the spa page](https://studies.cs.helsinki.fi/exampleapp/spa.):
+
+```mermaid
 sequenceDiagram
 participant browser
 participant server
@@ -10,7 +13,6 @@ participant server
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     activate server
     server-->>browser: the css file
-    deactivate server
     deactivate server
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
@@ -26,3 +28,4 @@ participant server
     deactivate server
 
     Note right of browser: The browser executes the callback function that renders the notes
+```
