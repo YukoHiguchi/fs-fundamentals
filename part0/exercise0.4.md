@@ -1,9 +1,12 @@
+Here is the diagram when the user creates a new note on [the page](https://studies.cs.helsinki.fi/exampleapp/notes):
+
+```mermaid
 sequenceDiagram
 participant browser
 participant server
 
-    Note right of browser: user input a new note and click the Save button. The browser will send th input to server as a payload
-    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    Note right of browser: User inputs a new note and click the Save button. The browser will send the input to server as a payload
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note, payload: note:xxx
     activate server
 
     server-->>browser: Status code: 302, (Location: https://studies.cs.helsinki.fi/exampleapp/notes)
@@ -30,7 +33,8 @@ participant server
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
-    server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+    server-->>browser: [{ "content": "HTML is easy", "date": "2023-12-15" }, ... ]
     deactivate server
 
     Note right of browser: The browser executes the callback function that renders the notes
+```
