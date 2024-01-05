@@ -58,17 +58,35 @@ const App = () => {
             setTimeout(() => {
               setMessage(null);
             }, 5000);
+          })
+          .catch((error) => {
+            console.log(error.response.data.error);
+            setIsSuccess(false);
+            setMessage(error.response.data.error);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
           });
       }
     } else {
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setIsSuccess(true);
-        setMessage(`Added ${returnedPerson.name}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 5000);
-      });
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setIsSuccess(true);
+          setMessage(`Added ${returnedPerson.name}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+          setIsSuccess(false);
+          setMessage(error.response.data.error);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        });
     }
     clearForm();
   };
@@ -77,10 +95,10 @@ const App = () => {
     if (window.confirm(`Delete ${person.name} ?`)) {
       personService
         .delete(person.id)
-        .then((returnedPerson) => {
+        .then(() => {
           setPersons(persons.filter((p) => p.id !== person.id));
         })
-        .catch((error) => {
+        .catch(() => {
           setIsSuccess(false);
           setMessage(
             `Information ${person.name} has already been deleted from server`
