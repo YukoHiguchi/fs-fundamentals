@@ -1,39 +1,55 @@
 import { useSelector, useDispatch } from "react-redux"
-import { voteAnecdote } from "../reducers/anecdoteReducer"
+import { useEffect } from "react"
 import {
-  setNotification,
-  removeNotification,
-} from "../reducers/notificationReducer"
+  voteAnecdote,
+  selectAllAnecdotes,
+  fetchAnecdotes,
+} from "../reducers/anecdoteReducer"
+import { setNotification } from "../actions/notificationActions"
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector((state) => {
-    if (state.filter) {
-      return state.anecdotes.filter((anecdote) => {
-        console.log("filter", state.filter, anecdote)
-        if (anecdote?.content.match(`${state.filter}`)) {
+  const anecdotes = useSelector(selectAllAnecdotes)
+  const anecdoteStatus = useSelector((state) => state.anecdotes.status)
+  const filter = useSelector((state) => state.filter)
+
+  useEffect(() => {
+    if (anecdoteStatus === "idle") {
+      dispatch(fetchAnecdotes())
+    }
+  }, [anecdoteStatus, dispatch])
+  let resultAnecdotes = anecdotes
+
+  if (anecdoteStatus === "loading") {
+    return <div>loading</div>
+  } else if (anecdoteStatus === "successed") {
+    if (filter) {
+      resultAnecdotes = anecdotes.filter((anecdote) => {
+        if (anecdote?.content.match(`${filter}`)) {
           return anecdote
         }
       })
     } else {
-      return state.anecdotes
+      resultAnecdotes = anecdotes
     }
-  })
-
+  }
   return (
     <div>
-      {anecdotes.map((anecdote) => (
+      {resultAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
             <button
-              onClick={() => {
-                dispatch(voteAnecdote(anecdote.id))
-                dispatch(setNotification(`you voted '${anecdote.content}'`))
-                setTimeout(() => {
-                  dispatch(removeNotification())
-                }, 5000)
+              onClick={async () => {
+                await dispatch(
+                  voteAnecdote({
+                    content: anecdote.content,
+                    votes: anecdote.votes,
+                    id: anecdote.id,
+                  })
+                ).unwrap()
+                dispatch(setNotification(`you voted '${anecdote.content}`, 5))
               }}
             >
               vote

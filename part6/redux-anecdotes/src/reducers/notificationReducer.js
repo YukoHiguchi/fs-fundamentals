@@ -1,20 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { SET_NOTIFICATION, CLEAR_NOTIFICATION } from "../actions/actionTypes"
 
-const initialState = "render here notification..."
-const notificationSlice = createSlice({
-  name: "notification",
-  initialState,
-  reducers: {
-    setNotification(state, action) {
-      return action.payload
-    },
-    // eslint-disable-next-line no-unused-vars
-    removeNotification(state, action) {
-      return null
-    },
-  },
-})
+const notificationReducer = (state = "", action) => {
+  switch (action.type) {
+    case SET_NOTIFICATION:
+      return action.message
+    case CLEAR_NOTIFICATION:
+      return ""
+    default:
+      return state
+  }
+}
 
-export const { setNotification, removeNotification } = notificationSlice.actions
-
-export default notificationSlice.reducer
+export default notificationReducer
