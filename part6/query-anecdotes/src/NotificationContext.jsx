@@ -1,12 +1,11 @@
-/* eslint-disable react/prop-types */
 import { createContext, useReducer, useContext } from "react"
 
-const notificationReducer = (state, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
-    case "SET_NOTIFICATION":
+    case "SET":
       return action.payload
-    case "CLEAR_NOTIFICATION":
-      return ""
+    case "CLEAR":
+      return null
     default:
       return state
   }
@@ -15,27 +14,29 @@ const notificationReducer = (state, action) => {
 const NotificationContext = createContext()
 
 export const NotificationContextProvider = (props) => {
-  const [notification, notificationDispatch] = useReducer(
-    notificationReducer,
-    ""
-  )
+  const [notification, dispatch] = useReducer(reducer, null)
 
   return (
-    <NotificationContext.Provider value={[notification, notificationDispatch]}>
+    <NotificationContext.Provider value={[notification, dispatch]}>
       {props.children}
     </NotificationContext.Provider>
   )
 }
-// eslint-disable-next-line react-refresh/only-export-components
-export const useNotificationMessage = () => {
-  const notificationAndDispatch = useContext(NotificationContext)
-  return notificationAndDispatch[0]
+
+export const useNotificationValue = () => {
+  const [notification] = useContext(NotificationContext)
+  return notification
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useNotificationDispatch = () => {
-  const notificationAndDispatch = useContext(NotificationContext)
-  return notificationAndDispatch[1]
+export const useNotify = () => {
+  const valueAndDispatch = useContext(NotificationContext)
+  const dispatch = valueAndDispatch[1]
+  return (payload) => {
+    dispatch({ type: "SET", payload })
+    setTimeout(() => {
+      dispatch({ type: "CLEAR" })
+    }, 5000)
+  }
 }
 
 export default NotificationContext

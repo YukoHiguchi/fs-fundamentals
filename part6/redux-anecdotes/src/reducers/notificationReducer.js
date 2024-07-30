@@ -1,14 +1,26 @@
-import { SET_NOTIFICATION, CLEAR_NOTIFICATION } from "../actions/actionTypes"
+import { createSlice } from "@reduxjs/toolkit"
 
-const notificationReducer = (state = "", action) => {
-  switch (action.type) {
-    case SET_NOTIFICATION:
-      return action.message
-    case CLEAR_NOTIFICATION:
-      return ""
-    default:
-      return state
+const sclice = createSlice({
+  name: "notification",
+  initialState: null,
+  reducers: {
+    set(state, action) {
+      return action.payload
+    },
+    clear(state, action) {
+      return null
+    },
+  },
+})
+
+export const setNotification = (content, seconds) => {
+  return async (dispatch) => {
+    dispatch(set(content))
+    setTimeout(() => {
+      dispatch(clear())
+    }, seconds * 1000)
   }
 }
 
-export default notificationReducer
+export const { set, clear } = sclice.actions
+export default sclice.reducer
